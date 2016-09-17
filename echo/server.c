@@ -28,7 +28,7 @@ int main() {
   socklen_t addr_len;           // size of address, used by `accept()`
 
   int byte_num;                 // number of read bytes
-  char buf[MAX_SIZE];          // used by `read()`/`write*`
+  char buffer[MAX_SIZE];        // buffer to store msg, used by `read()`/`write()`
 
 
   /* 1) Create the socket, use `socket()`
@@ -63,10 +63,10 @@ int main() {
   printf("Listening on %s:%d\n", inet_ntoa(svr_addr.sin_addr), PORT);
   printf("Waiting for client...\n\n");
 
+  addr_len = sizeof(struct sockaddr_in);
 
   while(1) {
     /* 4) Accept client connections */
-    addr_len = sizeof(struct sockaddr_in);
     cli_fd = accept(svr_fd, (struct sockaddr*)&cli_addr, (socklen_t*)&addr_len);
 
     if (cli_fd < 0) {
@@ -77,20 +77,24 @@ int main() {
     printf("Connection accepted\n");
     printf("Client is from %s:%d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
 
-    /*  Read msg from client */
-    memset(buf, 0, MAX_SIZE);
-    byte_num = read(cli_fd, buf, sizeof(buf));
+    /* Read msg from client */
+    memset(buffer, 0, MAX_SIZE);
+    byte_num = read(cli_fd, buffer, sizeof(buffer));
     if (byte_num < 0) {
       perror("Read failed");
       exit(1);
     }
 
     /* Echo back */
-    buf[byte_num] = '\0';
-    printf("Messages from client:   %s\n", buf);
-    printf("Messages length(bytes): %d\n\n", byte_num);
+    buffer[byte_num] = '\0';
+    printf("Messages from client: %s\r\n", buffer);
 
-    write(cli_fd, buf, byte_num + 1);
+    byte_num = write(cli_fd, buffer, byte_num + 1);
+    if (byte_num < 0) {
+      perror("Write failed");
+      exit(1);
+    }
+
     close(cli_fd);
   }
 

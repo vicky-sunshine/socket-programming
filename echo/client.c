@@ -14,13 +14,15 @@
 #include <unistd.h>     /* `read()` and `write()` functions */
 
 #define MAX_SIZE 2048
+#define PORT 8888
 
 
 int main (int argc , char **argv) {
-  int cli_fd;
-  struct sockaddr_in svr_addr;
-  int byte_num;
-  char buf[MAX_SIZE];
+  int cli_fd;                   // descriptor of client, used by `socket()`
+  struct sockaddr_in svr_addr;  // address of server, used by `connect()`
+
+  int byte_num;                 // number of read bytes
+  char buffer[MAX_SIZE];        // buffer to store msg, used by `read()`/`write()`
 
   /* 1) Create the socket, use `socket()`
         AF_INET: IPv4
@@ -36,7 +38,7 @@ int main (int argc , char **argv) {
   bzero(&svr_addr, sizeof(svr_addr));
   svr_addr.sin_family = AF_INET;
   svr_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-  svr_addr.sin_port = htons(8888);
+  svr_addr.sin_port = htons(PORT);
 
   if (connect(cli_fd, (struct sockaddr *)&svr_addr, sizeof(svr_addr)) < 0) {
     perror("Connect failed");
@@ -47,18 +49,17 @@ int main (int argc , char **argv) {
 
   /* scanf msg and send to the server */
   printf("Fill messages: ");
-  scanf("%s", buf);
-  write(cli_fd, buf, strlen(buf) + 1);
+  scanf("%[^\n]", buffer);
+  write(cli_fd, buffer, strlen(buffer) + 1);
 
   /* read echo from server */
-  byte_num = read(cli_fd, buf, sizeof(buf));
+  byte_num = read(cli_fd, buffer, sizeof(buffer));
   if (byte_num < 0) {
     perror("Read failed");
     exit(1);
   }
-  buf[byte_num] = '\0';
-  printf("\nEcho messages from server: %s\n", buf);
-  printf("Messages length(bytes): %d\n", byte_num);
+  buffer[byte_num] = '\0';
+  printf("\nEcho messages from server: %s\n", buffer);
 
   close(cli_fd);
 
