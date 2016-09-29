@@ -1,2 +1,2 @@
-# 2016-ICN-Lab-sample
-Sample solutions for 2016 Introduction to Computer Network
+# Socket-programming
+Some socket project implemented with C.
