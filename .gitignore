@@ -1,3 +1,4 @@
 */*.o
-file-transfer/download
+file-transfer/client
+file-transfer/server
 slides
