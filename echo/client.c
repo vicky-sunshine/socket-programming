@@ -59,7 +59,7 @@ int main (int argc , char **argv) {
     exit(1);
   }
   buffer[byte_num] = '\0';
-  printf("\nEcho messages from server: %s\n", buffer);
+  printf("Echo messages from server: %s\n", buffer);
 
   close(cli_fd);
 
