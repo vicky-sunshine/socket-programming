@@ -1,4 +1,6 @@
 */*.o
 file-transfer/client
 file-transfer/server
+echo/client
+echo/server
 slides
