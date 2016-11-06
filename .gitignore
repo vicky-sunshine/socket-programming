@@ -1,7 +1,7 @@
 */*.o
 file-transfer/client
 file-transfer/server
-file-transfer/dowload
+file-transfer/download
 echo/client
 echo/server
 slides
