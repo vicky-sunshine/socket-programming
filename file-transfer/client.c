@@ -66,13 +66,13 @@ void connection_handler (int sockfd) {
     printf("%s", buf);
 
     printf("-----------\nEnter the filename: ");
-    while (scanf(" %s", filename) > 0) {
+    while (scanf("%s", filename) > 0) {
         if (strcmp(filename, ".exit") == 0) {
             break;
         }
 
         /* send requested fileName to server */
-        if (write(sockfd, filename, MAX_SIZE) == -1) {
+        if (write(sockfd, filename, MAX_SIZE) < 0) {
             perror("Write filename failed\n");
         }
 
@@ -91,6 +91,7 @@ void file_download_handler(int sockfd, char filename[]) {
   int file_size = 0;    //  size of this file
   int read_byte = 0;    //  bytes this time recv
   int read_sum = 0;     //  bytes have been recv
+  int fwrite_byte = 0;  //  bytes this time write to file
   FILE *fp;
 
   /* receive start message from server */
@@ -108,16 +109,22 @@ void file_download_handler(int sockfd, char filename[]) {
   sprintf(path, "./download/%s", filename);
 
   read_sum = 0;
-  fp = fopen(path, "wb+");
+  fp = fopen(path, "wb");
   if (fp) {
       while (read_sum < file_size) {
         /* receive file data */
         memset(buf, '\0', MAX_SIZE);
-        read(sockfd, buf, MAX_SIZE);
-        read_byte = strlen(buf);
+        read_byte = read(sockfd, buf, MAX_SIZE);
+        if (read_byte < 0) {
+          perror("Read data from socket failed\n");
+        }
 
         /* write file to local disk*/
         fwrite(&buf, sizeof(char), read_byte, fp);
+        if (fwrite_byte < 0) {
+          perror("Write to file failed\n");
+        }
+
         read_sum += read_byte;
       }
       fclose(fp);

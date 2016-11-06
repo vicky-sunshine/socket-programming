@@ -160,7 +160,7 @@ void file_sending_handler(int sockfd, char filename[]) {
   int write_sum = 0;    //  bytes have been sent
 
   sprintf(path, "remote_storage/%s", filename);
-  fp = fopen(path, "rb+");
+  fp = fopen(path, "rb");
   if (fp) {
     /* send start downloading message */
     memset(buf, '\0', MAX_SIZE);
@@ -192,7 +192,7 @@ void file_sending_handler(int sockfd, char filename[]) {
       write_byte = fread(&buf, sizeof(char), MAX_SIZE, fp);
 
       /* send file data to client */
-      if (write(sockfd, buf, MAX_SIZE) == -1) {
+      if (write(sockfd, buf, MAX_SIZE) < 0) {
           printf("Send file data failed!");
           return;
       }
