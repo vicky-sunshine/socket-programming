@@ -1,6 +1,9 @@
 */*.o
 file-transfer/client
 file-transfer/server
+file-transfer/dowload
 echo/client
 echo/server
 slides
+
+*/.DS_Store
