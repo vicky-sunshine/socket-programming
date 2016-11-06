@@ -89,7 +89,7 @@ int main() {
     buffer[byte_num] = '\0';
     printf("Messages from client: %s\r\n", buffer);
 
-    byte_num = write(cli_fd, buffer, byte_num + 1);
+    byte_num = write(cli_fd, buffer, byte_num);
     if (byte_num < 0) {
       perror("Write failed");
       exit(1);

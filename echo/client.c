@@ -50,7 +50,7 @@ int main (int argc , char **argv) {
   /* scanf msg and send to the server */
   printf("Fill messages: ");
   scanf("%[^\n]", buffer);
-  write(cli_fd, buffer, strlen(buffer) + 1);
+  write(cli_fd, buffer, strlen(buffer));
 
   /* read echo from server */
   byte_num = read(cli_fd, buffer, sizeof(buffer));
